@@ -1,0 +1,24 @@
+<html>
+    <body style="background-color: lightgray;">
+        <form method="POST" action="">
+            <center>
+            <h1>This app will display the most similar tweets from your input sentence.</h1> <br>
+            Please write a Word/Sentence<br><br>    
+            <input type = "text" name = "sentence" required style="background-color: #F58CBA;"/> <br>
+            <input type="hidden" name="form_type" value="analysis_sentence"/> <br>
+            <p>Enter the number of similar tweets that you want.</p>
+            <input type="number" name="topN" min="1" required style="background-color: #F58CBA;"/>
+            <input type = "submit" style="background-color:#F58CBA;">
+            <br></br>
+            {% if content != '' %}
+                <p id=content>For the sentence "{{ content }}", the top similar tweets are :</p>
+                {% for tweet in tweets %}
+                    <p>{{tweet}}</p>
+                {% endfor %}
+            {% endif %}
+            </center>
+        </form>
+        <h5>Made by Romane THOIREY and Jeremy TRULLIER.</h5>
+        <img src="https://www.efrei.fr/wp-content/uploads/2019/06/Logo-Efrei-Paris-Cube-aplat-plein-noir.png" alt="" data-lazy-src="https://www.efrei.fr/wp-content/uploads/2019/06/Logo-Efrei-Paris-Cube-aplat-plein-noir.png" class="lazyloaded" data-was-processed="true" witdh="10%" height="10%">
+    </body>
+</html>
