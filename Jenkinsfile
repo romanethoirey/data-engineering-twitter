@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build Docker'){
             steps{
-                sh 'docker build -d -t twitter_app .'
+                sh 'docker build -t twitter_app .'
             }
         }
         stage('Run Docker'){
