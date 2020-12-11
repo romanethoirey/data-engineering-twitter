@@ -52,29 +52,43 @@ similarity_index = WordEmbeddingSimilarityIndex(glove)
 
 print("Model loaded")
 
+#####################
+
+print("Building term dictionary and similarity matrix")
+# Build the term dictionary, TF-idf model
+dictionary = Dictionary(corpus)
+tfidf = TfidfModel(dictionary=dictionary)
+
+# Create the term similarity matrix.  
+similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
+
+print("Term dictionary and similarity matrix created")
+
+######################################################
+
 def get_N_Most_Similar_Tweets(sentence, n=20):
+    print(n, type(n))
+    
     # preprocess the input sentence
     query = preprocess(sentence)
-    
-    print("Building term dictionary and similarity matrix")
-    # Build the term dictionary, TF-idf model
-    dictionary = Dictionary(corpus+[query])
-    tfidf = TfidfModel(dictionary=dictionary)
-
-    # Create the term similarity matrix.  
-    similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
-
-    print("Term dictionary and similarity matrix created")
 
     query_tf = tfidf[dictionary.doc2bow(query)]
-
+    print(query_tf)
+    
     index = SoftCosineSimilarity(tfidf[[dictionary.doc2bow(document) for document in corpus]],similarity_matrix)
 
     doc_similarity_scores = index[query_tf]
 
     # Output the sorted similarity scores and documents
     sorted_indexes = np.argsort(doc_similarity_scores)[::-1]
-    return sorted_indexes[:n]
+    print("Tweets sorted")
+    
+    similar_tweets = []
+    for i, idx in enumerate(sorted_indexes):
+        if i > int(n):
+            break
+        similar_tweets.append(f'{doc_similarity_scores[idx]:0.3f} \t {documents[idx]}')
+    return similar_tweets
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
