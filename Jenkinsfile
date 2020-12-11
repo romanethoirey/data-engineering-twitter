@@ -13,8 +13,9 @@ pipeline {
         stage('Testing'){
             steps{
                 script{
-                    if(env.BRANCH_NAME == 'feat')
+                    if(env.BRANCH_NAME.contains('feat')){
                         sh 'echo Tests "python test_app.py"'
+                    }
                 }
             }
         }
@@ -30,7 +31,7 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'develop'){
-                        echo 'git co -b release'
+                        sh 'git co -b release'
                     }
                 }
             }
