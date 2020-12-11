@@ -17,8 +17,10 @@ pipeline {
             }
         }
         stage('Stop Containers'){
-            sh 'docker rm -f twitter_app_c'
-            sh 'docker rmi -f twitter_app'
+            steps{
+                sh 'docker rm -f twitter_app_c'
+                sh 'docker rmi -f twitter_app'
+            }
         }
     }
 }
