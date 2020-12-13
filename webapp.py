@@ -74,7 +74,6 @@ def get_N_Most_Similar_Tweets(sentence, n=20):
     query = preprocess(sentence)
 
     query_tf = tfidf[dictionary.doc2bow(query)]
-    print(query_tf)
     
     index = SoftCosineSimilarity(tfidf[[dictionary.doc2bow(document) for document in corpus]],similarity_matrix)
 
@@ -86,7 +85,7 @@ def get_N_Most_Similar_Tweets(sentence, n=20):
     
     similar_tweets = []
     for i, idx in enumerate(sorted_indexes):
-        if i > int(n):
+        if i >= int(n):
             break
         similar_tweets.append(f'{doc_similarity_scores[idx]:0.3f} \t {documents[idx]}')
     return similar_tweets
@@ -95,6 +94,7 @@ def get_N_Most_Similar_Tweets(sentence, n=20):
 def index():
     if request.method == 'POST':
         details = request.form
+        print(details)
         if (details['form_type'] == 'analysis_sentence'):
             content = details['sentence']
             tweets = get_N_Most_Similar_Tweets(details['sentence'], details['topN'])
