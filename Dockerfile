@@ -15,6 +15,7 @@ COPY . .
 
 EXPOSE 5000
 
-RUN python *.py
+# Preprocess python script before launching the app
+# RUN python *.py
 
 CMD [ "python", "webapp.py" ]
