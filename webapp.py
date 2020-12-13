@@ -1,4 +1,6 @@
 import re
+import time
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -14,6 +16,9 @@ from gensim.utils import simple_preprocess, simple_tokenize
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
+start_time = time.time()
+
+stopwords = ['the', 'and', 'are', 'a']
 
 def preprocess(doc):
     """
@@ -25,50 +30,46 @@ def preprocess(doc):
     doc = re.sub(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', " url_token ", doc)
     return [token for token in simple_preprocess(doc, min_len=0, max_len=float("inf")) if token not in stopwords]
 
-df = pd.read_csv('tweets.csv', index_col=False)
-tweets = df['text']
-#del df
+print("Loading data and corpus")
 
-print("Tweets loaded")
+file_corpus_r = open("data/corpus.pickle",'rb')
+corpus = pickle.load(file_corpus_r)
+file_corpus_r.close()
 
-######################
+file_doc_r = open("data/doc.pickle",'rb')
+documents = pickle.load(file_doc_r)
+file_doc_r.close()
 
-print("Start preprocessing")
+file_dico_r = open("data/dico.pickle",'rb')
+dictionary = pickle.load(file_dico_r)
+file_dico_r.close()
 
-documents = tweets
-stopwords = ['the', 'and', 'are', 'a']
+file_corpus_r = open("data/corpus.pickle",'rb')
+corpus = pickle.load(file_corpus_r)
+file_corpus_r.close()
 
-# Preprocess the documents, including the query string
-corpus = [preprocess(document) for document in documents]
+file_tfidf_r = open("data/tfidf.pickle",'rb')
+tfidf = pickle.load(file_tfidf_r)
+file_tfidf_r.close()
 
-print("Preprocessing finished")
+file_sim_idx_r = open("data/sim_idx.pickle",'rb')
+similarity_index = pickle.load(file_sim_idx_r)
+file_sim_idx_r.close()
 
-###############################
+file_sim_matrix_r = open("data/sim_matrix.pickle",'rb')
+similarity_matrix = pickle.load(file_sim_matrix_r)
+file_sim_matrix_r.close()
 
-print("Loading model")
-# Load the model: this is a big file, can take a while to download and open
-glove = api.load("glove-wiki-gigaword-50")    
-similarity_index = WordEmbeddingSimilarityIndex(glove)
-
-print("Model loaded")
-
-#####################
-
-print("Building term dictionary and similarity matrix")
-# Build the term dictionary, TF-idf model
-dictionary = Dictionary(corpus)
-tfidf = TfidfModel(dictionary=dictionary)
-
-# Create the term similarity matrix.  
-similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
-
-print("Term dictionary and similarity matrix created")
-
-######################################################
+print("Data and corpus finished loading")
+print(time.time() - start_time)
 
 def get_N_Most_Similar_Tweets(sentence, n=20):
-    print(n, type(n))
-    
+    """
+    Return the n most similar tweets from a sentence
+    Parameters:
+        - sentence : the sentence you want similar tweets from
+        - n : the number of tweets you want
+    """
     # preprocess the input sentence
     query = preprocess(sentence)
 
