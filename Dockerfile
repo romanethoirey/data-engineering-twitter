@@ -15,4 +15,6 @@ COPY . .
 
 EXPOSE 5000
 
+RUN python *.py
+
 CMD [ "python", "webapp.py" ]

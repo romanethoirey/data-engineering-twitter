@@ -50,6 +50,7 @@ pipeline {
                 script{
                     if(env.BRANCH_NAME == 'release'){
                         sh 'git merge master'
+                        // sh 'git br -D release'
                     }
                 }
             }
