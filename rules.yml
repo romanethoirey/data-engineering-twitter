@@ -1,0 +1,6 @@
+groups:
+  - name: rule1
+    rules:
+    - alert : InstanceDown
+      expr: up == 0
+      for: 2s

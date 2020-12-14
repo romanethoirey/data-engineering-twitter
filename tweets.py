@@ -1,6 +1,7 @@
 import re
 import time
 import pickle
+import os
 
 import numpy as np
 import pandas as pd
@@ -35,54 +36,56 @@ tweets = df['text']
 
 print("Tweets loaded")
 
-print("Start preprocessing")
+if(len(os.listdir())==1):
 
-documents = tweets
-file_doc_w = open("data/doc.pickle", 'wb')
-pickle.dump(documents, file_doc_w)
-file_doc_w.close()
+    print("Start preprocessing")
 
-stopwords = ['the', 'and', 'are', 'a']
+    documents = tweets
+    file_doc_w = open("data/doc.pickle", 'wb')
+    pickle.dump(documents, file_doc_w)
+    file_doc_w.close()
 
-# Preprocess the documents, including the query string
-corpus = [preprocess(document) for document in documents]
+    stopwords = ['the', 'and', 'are', 'a']
 
-file_corpus_w = open("data/corpus.pickle", 'wb')
-pickle.dump(corpus, file_corpus_w)
-file_corpus_w.close()
-print("Preprocessing finished")
+    # Preprocess the documents, including the query string
+    corpus = [preprocess(document) for document in documents]
 
-print(time.time() - start_time)
-print("Loading model")
-# Load the model: this is a big file, can take a while to download and open
-glove = api.load("glove-wiki-gigaword-50")    
-similarity_index = WordEmbeddingSimilarityIndex(glove)
-file_sim_idx_w = open("data/sim_idx.pickle", 'wb')
-pickle.dump(similarity_index, file_sim_idx_w)
-file_sim_idx_w.close()
+    file_corpus_w = open("data/corpus.pickle", 'wb')
+    pickle.dump(corpus, file_corpus_w)
+    file_corpus_w.close()
+    print("Preprocessing finished")
 
-print("Model loaded")
-print(time.time() - start_time)
-#####################
+    print(time.time() - start_time)
+    print("Loading model")
+    # Load the model: this is a big file, can take a while to download and open
+    glove = api.load("glove-wiki-gigaword-50")    
+    similarity_index = WordEmbeddingSimilarityIndex(glove)
+    file_sim_idx_w = open("data/sim_idx.pickle", 'wb')
+    pickle.dump(similarity_index, file_sim_idx_w)
+    file_sim_idx_w.close()
 
-print("Building term dictionary and similarity matrix")
-# Build the term dictionary, TF-idf model
-dictionary = Dictionary(corpus)
-tfidf = TfidfModel(dictionary=dictionary)
-file_tfidf_w = open("data/tfidf.pickle", 'wb')
-pickle.dump(tfidf, file_tfidf_w)
-file_tfidf_w.close()
-file_dico_w = open("data/dico.pickle", 'wb')
-pickle.dump(dictionary, file_dico_w)
-file_dico_w.close()
+    print("Model loaded")
+    print(time.time() - start_time)
+    #####################
 
-# Create the term similarity matrix.  
-similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
-file_sim_matrix_w = open("data/sim_matrix.pickle", 'wb')
-pickle.dump(similarity_matrix, file_sim_matrix_w)
-file_sim_matrix_w.close()
+    print("Building term dictionary and similarity matrix")
+    # Build the term dictionary, TF-idf model
+    dictionary = Dictionary(corpus)
+    tfidf = TfidfModel(dictionary=dictionary)
+    file_tfidf_w = open("data/tfidf.pickle", 'wb')
+    pickle.dump(tfidf, file_tfidf_w)
+    file_tfidf_w.close()
+    file_dico_w = open("data/dico.pickle", 'wb')
+    pickle.dump(dictionary, file_dico_w)
+    file_dico_w.close()
 
-print("Term dictionary and similarity matrix created")
-print(time.time() - start_time)
-print("Finished")
-######################################################
+    # Create the term similarity matrix.  
+    similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
+    file_sim_matrix_w = open("data/sim_matrix.pickle", 'wb')
+    pickle.dump(similarity_matrix, file_sim_matrix_w)
+    file_sim_matrix_w.close()
+
+    print("Term dictionary and similarity matrix created")
+    print(time.time() - start_time)
+    print("Finished")
+    ######################################################
