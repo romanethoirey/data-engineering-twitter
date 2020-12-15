@@ -54,7 +54,7 @@ pipeline {
                         sh 'git br -d origin/main'
                         sh 'git co -b origin/main'
                         sh 'git merge origin/release'
-                        sh 'git push origin master'
+                        sh 'git push origin main'
                         
                         sh 'git br -D release'
                     }
