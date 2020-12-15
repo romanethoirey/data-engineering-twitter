@@ -51,7 +51,8 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'release'){
-                        sh 'git co main'
+                        sh 'git pull origin release'
+                        sh 'git co origin/main'
                         sh 'git merge release'
                         // sh 'git br -D release'
                     }
