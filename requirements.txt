@@ -3,6 +3,5 @@ flask
 gensim
 prometheus_client
 locust
-unittest
 requests
 beautifulsoup4
