@@ -57,7 +57,6 @@ pipeline {
                         sh 'git merge origin/release'
                         sh 'git pull origin main'
                         sh 'git push origin main'
-                        sh 'git branch -D origin/release'
                     }
                 }
             }
