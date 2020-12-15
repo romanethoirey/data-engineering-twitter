@@ -52,7 +52,7 @@ pipeline {
                 script{
                     if(env.BRANCH_NAME == 'release'){
                         sh 'git co -b origin/main'
-                        sh 'git merge release'
+                        sh 'git merge origin/release'
                         sh 'git push origin master'
                         
                         sh 'git br -D release'
