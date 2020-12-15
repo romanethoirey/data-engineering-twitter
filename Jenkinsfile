@@ -4,7 +4,7 @@ pipeline {
         stage('Build Docker'){
             steps{
                 script{
-                    if(env.BRANCH_NAME != 'master'){
+                    if(env.BRANCH_NAME != 'main'){
                         sh 'docker-compose up -d'
                     }
                 }
@@ -32,6 +32,7 @@ pipeline {
                 script{
                     if(env.BRANCH_NAME == 'develop'){
                         sh 'git co -b release'
+                        sh 'git push origin release'
                     }
                 }
             }
@@ -49,7 +50,8 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'release'){
-                        sh 'git merge master'
+                        sh 'git co main'
+                        sh 'git merge release'
                         // sh 'git br -D release'
                     }
                 }
@@ -58,7 +60,7 @@ pipeline {
         stage('Stop Containers'){
             steps{
                 script{
-                   if(env.BRANCH_NAME != 'master'){
+                   if(env.BRANCH_NAME != 'main'){
                         sh 'docker-compose down'
                     } 
                 }
