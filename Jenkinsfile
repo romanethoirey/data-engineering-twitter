@@ -52,6 +52,7 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'release'){
+                        sh 'git merge --abort'
                         sh 'git br -d main'
                         sh 'git co -b main'
                         sh 'git merge origin/release'
