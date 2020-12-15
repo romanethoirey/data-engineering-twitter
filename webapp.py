@@ -1,6 +1,7 @@
 import re
 import time
 import pickle
+import random
 
 import numpy as np
 import pandas as pd
@@ -15,10 +16,22 @@ from gensim.utils import simple_preprocess, simple_tokenize
 
 from flask import Flask, request, render_template
 
+from prometheus_client import start_http_server, Counter, Gauge, Summary, Histogram
+from multiprocessing.pool import ThreadPool
+
 app = Flask(__name__)
 start_time = time.time()
 
 stopwords = ['the', 'and', 'are', 'a']
+
+REQUESTS = Counter('twitter_app_calls_total', 'How many times the app was called')
+EXCEPTIONS = Counter('twitter_app_exception_total', 'How many times the app caused an exception')
+INPROGRESS = Gauge('twitter_app_inprogress', 'number of request in progress')
+LAST = Gauge('twitter_app_last_time_seconds', 'the last time our app was called')
+LATENCY_SUMMARY = Summary('twitter_app_latency_sum', 'the time needed for a request')
+LATENCY_HISTOGRAM = Histogram('twitter_app_latency_hist', 'the time needed for a request',
+                                buckets=[1, 2, 3, 4, 5, 6, 7, 8, 9.0, 9.5, 10, 10.5, 11])
+
 
 def preprocess(doc):
     """
@@ -92,14 +105,27 @@ def get_N_Most_Similar_Tweets(sentence, n=20):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    LAST.set(time.time())
+    REQUESTS.inc()
+    start = time.time()
+
+    INPROGRESS.inc()
+
     if request.method == 'POST':
         details = request.form
         print(details)
         if (details['form_type'] == 'analysis_sentence'):
             content = details['sentence']
             tweets = get_N_Most_Similar_Tweets(details['sentence'], details['topN'])
+            
+            INPROGRESS.dec()
+            LATENCY_SUMMARY.observe(time.time() - start)
+            LATENCY_HISTOGRAM.observe(time.time() - start)
             return render_template('index.html', content=content, tweets=tweets)
     return render_template('index.html', content='', tweets=-1)
 
 if __name__ == '__main__':
+    # pool = ThreadPool(1)
+    # pool.apply_async(start_http_server, (3630, ))
+    start_http_server(8000)
     app.run(host='0.0.0.0')
