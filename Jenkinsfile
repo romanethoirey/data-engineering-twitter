@@ -14,7 +14,7 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME.contains('feat')){
-                        sh 'echo Tests "python test_app.py"'
+                        sh 'python unit_testing.py'
                     }
                 }
             }
@@ -23,7 +23,8 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'develop')
-                        sh 'echo Stress the tests'
+                        sh 'locust -f stress_test.py &'
+                        input 'Done with stress test ?'
                 }
             }
         }
