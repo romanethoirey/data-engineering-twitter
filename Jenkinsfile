@@ -32,7 +32,7 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'develop'){
-                        //sh 'git br -d release'
+                        sh 'git br -d release'
                         sh 'git co -b release'
                         sh 'git push origin release'
                     }
