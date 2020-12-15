@@ -7,15 +7,17 @@
             <input type = "text" name = "sentence" required style="background-color: #F58CBA;"/> <br>
             <input type="hidden" name="form_type" value="analysis_sentence"/> <br>
             <p>Enter the number of similar tweets that you want.</p>
-            <input type="number" name="topN" min="1" required style="background-color: #F58CBA;"/>
+            <input type="number" name="topN" min="1" value="20" required style="background-color: #F58CBA;"/>
             <input type = "submit" style="background-color:#F58CBA;">
             <br></br>
+            <div id="tweets">
             {% if content != '' %}
                 <p id=content>For the sentence "{{ content }}", the top similar tweets are :</p>
                 {% for tweet in tweets %}
                     <p>{{tweet}}</p>
                 {% endfor %}
             {% endif %}
+            </div>
             </center>
         </form>
         <h5>Made by Romane THOIREY and Jeremy TRULLIER.</h5>
