@@ -2,3 +2,6 @@ pandas
 flask
 gensim
 prometheus_client
+locust
+requests
+beautifulsoup4
