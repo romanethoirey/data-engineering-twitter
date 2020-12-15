@@ -23,7 +23,8 @@ pipeline {
             steps{
                 script{
                     if(env.BRANCH_NAME == 'develop')
-                        sh 'locust -f stress_test.py'
+                        sh 'locust -f stress_test.py &'
+                        input 'Done with stress test ?'
                 }
             }
         }
